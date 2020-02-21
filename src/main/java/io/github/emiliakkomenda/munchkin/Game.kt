@@ -1,51 +1,50 @@
 package io.github.emiliakkomenda.munchkin
 
 data class Hero(
-    val heroName: String,
-    var heroStrength: Int
+    val name: String,
+    var strength: Int
 )
 
-val randomMonsterStrength: Int get() = (1..10).random()
-val randomHeroStrength: Int get() = (1..5).random()
-val randomDoorEffect: Int get() = (1..2).random()
+fun randomMonsterStrength() = (1..10).random()
+fun randomHeroStrength() = (1..5).random()
+fun randomDoorEffect() = (1..2).random()
 
-val hero = Hero("Hero", randomHeroStrength)
-
-fun doorEffect(number: Int) {
-    if (number == 1) {
-        val monsterStrength = randomMonsterStrength
-        println("Monster appeared with strength: $monsterStrength")
-        fight(monsterStrength)
-    } else {
-        println("Weapon found: ${hero.heroName} update from level ${hero.heroStrength} to level ${++hero.heroStrength}")
+fun handleDoorEffect(hero: Hero, doorEffect: Int) = when (doorEffect) {
+    1 -> {
+        val monsterStrength = randomMonsterStrength()
+        println("The Monster appears with strength $monsterStrength")
+        fight(hero, monsterStrength)
     }
+
+    2 -> println("Weapon is found: ${hero.name} upgrades from level ${hero.strength} to level ${++hero.strength}")
+
+    else -> throw IllegalArgumentException("Unknown door effect $doorEffect")
 }
 
-fun doorKnocking() {
+fun knockToDoor(hero: Hero) {
     println("Knock knock")
-    doorEffect(randomDoorEffect)
+    handleDoorEffect(hero, randomDoorEffect())
 }
 
-fun fight(monsterStrength: Int) {
-    if (hero.heroStrength > monsterStrength) {
-        println("${hero.heroName} win! ${hero.heroName} level up: from level ${hero.heroStrength} to level ${++hero.heroStrength}")
-    } else {
-        println("${hero.heroName} lose from level ${hero.heroStrength} to level ${--hero.heroStrength}")
+fun fight(hero: Hero, monsterStrength: Int) {
+    when {
+        hero.strength > monsterStrength ->
+            println("${hero.name} wins! ${hero.name} levels up: from level ${hero.strength} to level ${++hero.strength}")
+
+        else ->
+            println("${hero.name} loses! ${hero.name} downgrades from level ${hero.strength} to level ${--hero.strength}")
     }
 }
 
 fun main() {
-    while (hero.heroStrength <= 10) {
-        doorKnocking()
+    val hero = Hero("Hero", randomHeroStrength())
 
-        if (hero.heroStrength == 10) {
-            println("Hero win")
-            break
-        }
+    while (hero.strength in 1..9) {
+        knockToDoor(hero)
 
-        if (hero.heroStrength == 0) {
-            println("${hero.heroName} died. Game over")
-            break
+        when (hero.strength) {
+            0 -> println("${hero.name} dies. Game over")
+            10 -> println("${hero.name} wins! Game over")
         }
     }
 }
