@@ -36,9 +36,7 @@ fun fight(hero: Hero, monsterStrength: Int) {
     }
 }
 
-fun main() {
-    val hero = Hero("Hero", randomHeroStrength())
-
+fun playGame(hero: Hero) {
     while (hero.strength in 1..9) {
         knockToDoor(hero)
 
@@ -47,4 +45,10 @@ fun main() {
             10 -> println("${hero.name} wins! Game over")
         }
     }
+}
+
+fun main() {
+    val hero = Hero("Hero", randomHeroStrength())
+
+    playGame(hero)
 }
