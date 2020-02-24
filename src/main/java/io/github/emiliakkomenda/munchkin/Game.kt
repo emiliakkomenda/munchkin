@@ -7,7 +7,7 @@ data class Hero(
 
 fun randomMonsterStrength() = (1..10).random()
 fun randomHeroStrength() = (1..5).random()
-fun randomDoorEffect() = (1..2).random()
+fun randomDoorEffect() = (1..3).random()
 
 fun handleDoorEffect(hero: Hero, doorEffect: Int) = when (doorEffect) {
     1 -> {
@@ -17,6 +17,8 @@ fun handleDoorEffect(hero: Hero, doorEffect: Int) = when (doorEffect) {
     }
 
     2 -> println("Weapon is found: ${hero.name} upgrades from level ${hero.strength} to level ${++hero.strength}")
+
+    3 -> println("${hero.name} is cursed and loses a level: from level ${hero.strength} to level ${--hero.strength}")
 
     else -> throw IllegalArgumentException("Unknown door effect $doorEffect")
 }
@@ -31,8 +33,13 @@ fun fight(hero: Hero, monsterStrength: Int) {
         hero.strength > monsterStrength ->
             println("${hero.name} wins! ${hero.name} levels up: from level ${hero.strength} to level ${++hero.strength}")
 
-        else ->
+        hero.strength < monsterStrength ->
             println("${hero.name} loses! ${hero.name} downgrades from level ${hero.strength} to level ${--hero.strength}")
+
+        hero.strength == monsterStrength ->
+            println("It's a draw")
+
+        else -> throw IllegalArgumentException("Unknown value: ${hero.strength} or $monsterStrength is unsuited")
     }
 }
 
