@@ -19,6 +19,7 @@ fun handleDoorEffect(hero: Hero, doorEffect: Int) = when (doorEffect) {
     }
 
     2 -> println("Weapon is found: ${hero.name} upgrades from level ${hero.strength} to level ${++hero.strength}")
+
     3 -> getCurse(hero, randomCurseEffect())
 
     else -> throw IllegalArgumentException("Unknown door effect $doorEffect")
@@ -36,44 +37,43 @@ fun knockToDoor(hero: Hero) {
     handleDoorEffect(hero, randomDoorEffect())
 }
 
-fun fight(hero: Hero, monsterStrength: Int) {
-    when {
-        hero.strength > monsterStrength -> println("${hero.name} wins! ${hero.name} levels up: from level ${hero.strength} to level ${++hero.strength}")
-        hero.strength < monsterStrength -> heroTotalPointsFight(hero, monsterStrength)
-        hero.strength == monsterStrength -> heroTotalPointsFight(hero, monsterStrength)
-
-        else -> throw IllegalArgumentException("Unknown value: ${hero.strength} or $monsterStrength is unsuited")
-    }
+fun fight(hero: Hero, monsterStrength: Int) = when {
+    hero.strength > monsterStrength -> println("${hero.name} wins! ${hero.name} levels up: from level ${hero.strength} to level ${++hero.strength}")
+    else -> heroTotalPointsFight(hero, monsterStrength)
 }
 
 fun heroTotalPointsFight(hero: Hero, monsterStrength: Int) {
     val totalHeroStrength = hero.strength + hero.monsterCurse
 
     when {
-        totalHeroStrength > monsterStrength -> {
+        totalHeroStrength > monsterStrength ->
             println("${hero.name} wins! ${hero.name} levels up: from level ${hero.strength} to level ${++hero.strength}")
-            hero.monsterCurse = 0
-        }
-        totalHeroStrength < monsterStrength -> {
-            println("${hero.name} loses! ${hero.name} downgrades from level ${hero.strength} to level ${--hero.strength}")
-            hero.monsterCurse = 0
-        }
-        totalHeroStrength == monsterStrength -> {
-            println("It's a draw: ${hero.name} strength is ${hero.strength} plus ${hero.monsterCurse} monster curses and monster strength is $monsterStrength")
-            hero.monsterCurse = 0
-        }
 
-        else -> throw IllegalArgumentException("Unknown value: ${hero.strength}, $monsterStrength or ${hero.monsterCurse} is unsuited")
+        totalHeroStrength < monsterStrength ->
+            println("${hero.name} loses! ${hero.name} downgrades from level ${hero.strength} to level ${--hero.strength}")
+
+        totalHeroStrength == monsterStrength ->
+            println("It's a draw: ${hero.name} strength is ${hero.strength} plus ${hero.monsterCurse} monster curses and monster strength is $monsterStrength")
     }
+
+    hero.monsterCurse = 0
 }
 
 fun playGame(hero: Hero) {
-    while (hero.strength in 1..9) {
-        knockToDoor(hero)
-
+    while (true) {
         when (hero.strength) {
-            0 -> println("${hero.name} dies. Game over")
-            10 -> println("${hero.name} wins! Game over")
+            0 -> {
+                println("${hero.name} dies. Game over")
+                return
+            }
+            10 -> {
+                println("${hero.name} wins! Game over")
+                return
+            }
+
+            in 1..9 -> knockToDoor(hero)
+
+            else -> throw IllegalStateException()
         }
     }
 }
@@ -81,5 +81,6 @@ fun playGame(hero: Hero) {
 fun main() {
     val hero = Hero("Hero", randomHeroStrength())
 
+    println("${hero.name} starts with the strength: ${hero.strength}")
     playGame(hero)
 }
