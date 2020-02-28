@@ -36,9 +36,8 @@ fun getCurse(hero: Hero, curseEffect: Curse) = when (curseEffect) {
     Curse.ON_MONSTER -> println("${hero.name} finds monster curse! An additional point of attack against another monster: from ${hero.monsterCurse} points to ${++hero.monsterCurse} points")
 }
 
-fun knockToDoor(hero: Hero) {
+fun knockToDoor() {
     println("Knock knock")
-    handleDoorEffect(hero, randomDoorEffect())
 }
 
 fun fight(hero: Hero, monsterStrength: Int) = when {
@@ -75,7 +74,10 @@ fun playGame(hero: Hero) {
                 return
             }
 
-            in 1..9 -> knockToDoor(hero)
+            in 1..9 -> {
+                knockToDoor()
+                handleDoorEffect(hero, randomDoorEffect())
+            }
 
             else -> throw IllegalStateException()
         }
