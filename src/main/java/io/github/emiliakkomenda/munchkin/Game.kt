@@ -6,30 +6,34 @@ data class Hero(
     var monsterCurse: Int = 0
 )
 
+enum class DoorEffect {
+    MONSTER, WEAPON, CURSE
+}
+
+enum class Curse {
+    ON_HERO, ON_MONSTER
+}
+
 fun randomMonsterStrength() = (1..10).random()
 fun randomHeroStrength() = (1..5).random()
-fun randomDoorEffect() = (1..3).random()
-fun randomCurseEffect() = (1..2).random()
+fun randomDoorEffect() = DoorEffect.values().random()
+fun randomCurseEffect() = Curse.values().random()
 
-fun handleDoorEffect(hero: Hero, doorEffect: Int) = when (doorEffect) {
-    1 -> {
+fun handleDoorEffect(hero: Hero, doorEffect: DoorEffect) = when (doorEffect) {
+    DoorEffect.MONSTER -> {
         val monsterStrength = randomMonsterStrength()
         println("The Monster appears with strength $monsterStrength")
         fight(hero, monsterStrength)
     }
 
-    2 -> println("Weapon is found: ${hero.name} upgrades from level ${hero.strength} to level ${++hero.strength}")
+    DoorEffect.WEAPON -> println("Weapon is found: ${hero.name} upgrades from level ${hero.strength} to level ${++hero.strength}")
 
-    3 -> getCurse(hero, randomCurseEffect())
-
-    else -> throw IllegalArgumentException("Unknown door effect $doorEffect")
+    DoorEffect.CURSE -> getCurse(hero, randomCurseEffect())
 }
 
-fun getCurse(hero: Hero, curseEffect: Int) = when (curseEffect) {
-    1 -> println("${hero.name} is cursed and loses a level: from level ${hero.strength} to level ${--hero.strength}")
-    2 -> println("${hero.name} finds monster curse! An additional point of attack against another monster: from ${hero.monsterCurse} points to ${++hero.monsterCurse} points")
-
-    else -> throw IllegalArgumentException("Unknown curse effect $curseEffect")
+fun getCurse(hero: Hero, curseEffect: Curse) = when (curseEffect) {
+    Curse.ON_HERO -> println("${hero.name} is cursed and loses a level: from level ${hero.strength} to level ${--hero.strength}")
+    Curse.ON_MONSTER -> println("${hero.name} finds monster curse! An additional point of attack against another monster: from ${hero.monsterCurse} points to ${++hero.monsterCurse} points")
 }
 
 fun knockToDoor(hero: Hero) {
